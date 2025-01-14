@@ -151,9 +151,8 @@ def main(img_dir):
     np.save(os.path.join(sorted_dir,'tracks.npy'), pred_tracks.squeeze(0).cpu().numpy())
 
 if __name__ == "__main__":
-    v = 20
-    w = 1
-    f = 7
+    v = 18
+    w = 2
+    f = 3
     img_dir =f'/nfs/asmfsfs03/cptMRgPT/data/anonymized/xinyang/pyt/data/v{v}_w{w}_0{f}/raw/mri/4DMRI_SHORT_CORONAL_4_5SLICETHICKNESS_000{f+1}/'
     main(img_dir)
-#'/nfs/asmfsnobackup1/asmnobackup/user/wu_x3/code/baseline2007/contexts/v19_base/images'

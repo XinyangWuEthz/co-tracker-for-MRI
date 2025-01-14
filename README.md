@@ -6,9 +6,9 @@ use co-tracker to easily track medical videos, like MRI, CT...
 ![Description](assets/tracks.gif)
  
  In track-navigators.py, we can select some points, and use co-tracker to aotomatically track these points in the entire video, giving back a npy file, and a mp4 vedio. To use it, just specify your folder and run:
- """
+```
  python track_navigators.py
- """
+```
 
 ## Installation Instructions
 Please following the instructions of co-tracker.
