@@ -1,5 +1,5 @@
 import os
-
+from concurrent.futures import ThreadPoolExecutor
 from cotracker.utils.visualizer import Visualizer
 from cotracker.predictor import CoTrackerPredictor
 import matplotlib.pyplot as plt
@@ -11,12 +11,18 @@ from tkinter import filedialog
 import time
 
 def load_cine_mr_data(folder_path):
-    # Read all .DCM files
-    file_names = [os.path.join(folder_path, f) for f in os.listdir(folder_path) if f.endswith('.IMA')]
+    # Read all .IMA files from folder
+    file_names = []
+    file_names.extend([os.path.join(folder_path, f) for f in os.listdir(folder_path) if f.endswith('.IMA')])
     file_names.sort()  # Ensure files are sorted
 
-    # Read images and store them in a list
-    images = [sitk.ReadImage(f) for f in file_names]
+    # Function to read a single image
+    def read_image(file_name):
+        return sitk.ReadImage(file_name)
+
+    # Read images in parallel
+    with ThreadPoolExecutor() as executor:
+        images = list(executor.map(read_image, file_names))
 
     # Ensure all images have the same size
     size = images[0].GetSize()
@@ -119,7 +125,6 @@ def select_points_interactive_continuous(video, window_size=40, dense=False):
     return torch.tensor(points, dtype=torch.float32)
 
 def main(img_dir):
-    # TODO load orderd dats npy file
     video = load_cine_mr_data(img_dir)
     video = video.cuda()
     model = CoTrackerPredictor(
@@ -128,16 +133,19 @@ def main(img_dir):
         )
     ).cuda()
 
-    queries = select_points_interactive_continuous(video,dense=False).cuda()
+    queries = select_points_interactive_continuous(video, dense=False).cuda()
     filename = time.strftime("%Y%m%d-%H%M%S")
     pred_tracks, pred_visibility = model(video, queries=queries[None])
 
     rpath = img_dir.split('anonymized/')[-1]
-    os.makedirs(os.path.join('./results', rpath), exist_ok=True)
-    np.save(os.path.join('./results', rpath, filename + '_queries.npy'), queries.cpu().numpy())
-    np.save(os.path.join('./results', rpath, filename + '_pred_tracks.npy'), pred_tracks.squeeze(0).cpu().numpy())
-    # get the upper folder of img_dir
-    sorted_dir = os.path.join(img_dir.split('raw/')[0],'sorted')
+    results_dir = os.path.join('./results', rpath)
+    os.makedirs(results_dir, exist_ok=True)
+    np.save(os.path.join(results_dir, filename + '_queries.npy'), queries.cpu().numpy())
+    np.save(os.path.join(results_dir, filename + '_pred_tracks.npy'), pred_tracks.squeeze(0).cpu().numpy())
+
+    # Get the upper folder of img_dir
+    sorted_dir = os.path.join(img_dir.split('raw/')[0], 'sorted')
+    os.makedirs(sorted_dir, exist_ok=True)
     vis = Visualizer(
         save_dir=sorted_dir,
         linewidth=0.5,
@@ -151,8 +159,8 @@ def main(img_dir):
     np.save(os.path.join(sorted_dir,'tracks.npy'), pred_tracks.squeeze(0).cpu().numpy())
 
 if __name__ == "__main__":
-    v = 18
-    w = 2
-    f = 3
+    v = 11
+    w = 4
+    f = 5
     img_dir =f'/nfs/asmfsfs03/cptMRgPT/data/anonymized/xinyang/pyt/data/v{v}_w{w}_0{f}/raw/mri/4DMRI_SHORT_CORONAL_4_5SLICETHICKNESS_000{f+1}/'
     main(img_dir)
