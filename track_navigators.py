@@ -124,7 +124,7 @@ def select_points_interactive_continuous(video, window_size=40, dense=False):
 
     return torch.tensor(points, dtype=torch.float32)
 
-def main(img_dir):
+def track_one_folder(img_dir):
     video = load_cine_mr_data(img_dir)
     video = video.cuda()
     model = CoTrackerPredictor(
@@ -158,9 +158,18 @@ def main(img_dir):
         filename=filename)
     np.save(os.path.join(sorted_dir,'tracks.npy'), pred_tracks.squeeze(0).cpu().numpy())
 
+def main():
+    for v in range(6, 10):
+        for w in range(1, 5):
+            for p in [3,5,7]:
+                img_dir =f'/nfs/asmfsfs03/cptMRgPT/data/anonymized/xinyang/pyt/data/v{v}_w{w}_0{p}/raw/mri/4DMRI_SHORT_CORONAL_4_5SLICETHICKNESS_000{p+1}/'
+                track_one_folder(img_dir)
+                print(f'Finished tracking v{v}_w{w}_0{p}')
+
+
 if __name__ == "__main__":
-    v = 11
-    w = 4
-    f = 5
-    img_dir =f'/nfs/asmfsfs03/cptMRgPT/data/anonymized/xinyang/pyt/data/v{v}_w{w}_0{f}/raw/mri/4DMRI_SHORT_CORONAL_4_5SLICETHICKNESS_000{f+1}/'
-    main(img_dir)
+    # v = 10
+    # w = 3
+    # f = 5
+    # img_dir =f'/nfs/asmfsfs03/cptMRgPT/data/anonymized/xinyang/pyt/data/v{v}_w{w}_0{f}/raw/mri/4DMRI_SHORT_CORONAL_4_5SLICETHICKNESS_000{f+1}/'
+    main()
