@@ -159,12 +159,23 @@ def track_one_folder(img_dir):
     np.save(os.path.join(sorted_dir,'tracks.npy'), pred_tracks.squeeze(0).cpu().numpy())
 
 def main():
-    for v in range(6, 10):
-        for w in range(1, 5):
-            for p in [3,5,7]:
-                img_dir =f'/nfs/asmfsfs03/cptMRgPT/data/anonymized/xinyang/pyt/data/v{v}_w{w}_0{p}/raw/mri/4DMRI_SHORT_CORONAL_4_5SLICETHICKNESS_000{p+1}/'
-                track_one_folder(img_dir)
-                print(f'Finished tracking v{v}_w{w}_0{p}')
+    for i in range(2):
+        # if i == 0:
+        #     w_range = [1]
+        #     p_range = [5,17]
+        # else:
+        if i == 1:
+            w_range = [2,3,4,'5-2']
+            p_range = [3,5,7]
+            for v in [1]:
+                for w in w_range:
+                    for p in p_range: 
+                        img_dir =f'/nfs/asmfsfs03/cptMRgPT/data/anonymized/xinyang/pyt/data/v{v}_w{w}_0{p}/raw/mri/4DMRI_SHORT_CORONAL_4_5SLICETHICKNESS_00{p+1:02d}/'
+                        try:
+                            track_one_folder(img_dir)
+                            print(f'Finished tracking v{v}_w{w}_0{p}')
+                        except Exception as e:
+                            print(f'Error tracking v{v}_w{w}_0{p}: {e}')
 
 
 if __name__ == "__main__":
