@@ -121,9 +121,9 @@ def select_points_interactive_continuous(video, window_size=40, dense=False):
 
     return torch.tensor(points, dtype=torch.float32)
 
-def main(img_dir='/nfs/asmfsfs03/cptMRgPT/data/anonymized/xinyang/pyt/data/v19_full/raw/mri/', subfolders=None):
+def main(img_dir='/pyt/data/v19_full/raw/mri/', subfolders=None):
     if subfolders is None:
-        subfolders = ['4DMRI_SHORT_CORONAL_4_5SLICETHICKNESS_0004', '4DMRI_SHORT_CORONAL_4_5SLICETHICKNESS_0006', '4DMRI_SHORT_CORONAL_4_5SLICETHICKNESS_0008']
+        subfolders = ['4DMRI_SHORT_CORONAL_0004', '4DMRI_SHORT_CORONAL_0006', '4DMRI_SHORT_CORONAL_0008']
     
     folder_paths = [os.path.join(img_dir, subfolder) for subfolder in subfolders]
     
