@@ -170,7 +170,7 @@ def main():
             for v in [1]:
                 for w in w_range:
                     for p in p_range: 
-                        img_dir =f'/nfs/asmfsfs03/cptMRgPT/data/anonymized/xinyang/pyt/data/v{v}_w{w}_0{p}/raw/mri/4DMRI_SHORT_CORONAL_4_5SLICETHICKNESS_00{p+1:02d}/'
+                        img_dir =f'CORONAL_00{p+1:02d}/'
                         try:
                             track_one_folder(img_dir)
                             print(f'Finished tracking v{v}_w{w}_0{p}')
@@ -182,5 +182,5 @@ if __name__ == "__main__":
     # v = 10
     # w = 3
     # f = 5
-    # img_dir =f'/nfs/asmfsfs03/cptMRgPT/data/anonymized/xinyang/pyt/data/v{v}_w{w}_0{f}/raw/mri/4DMRI_SHORT_CORONAL_4_5SLICETHICKNESS_000{f+1}/'
+    # img_dir =f'/data/anonymized/pyt/data/v{v}_w{w}_0{f}/'
     main()
